@@ -45,7 +45,6 @@ const db = {
     }
 }
 
-
 // Configure Routes
 const router = express.Router();
 
@@ -58,6 +57,7 @@ router.get('/', (req, res) => {
     res.send(`Welcome to ${packageDescription.name} v${packageDescription.version}!`);
 });
 
+/* Get account by username */
 router.get('/accounts/:username', (req, res) => {
     const username = req.params.username;
     const account = db[username];
@@ -68,7 +68,7 @@ router.get('/accounts/:username', (req, res) => {
     }
 });
 
-// Add a new account
+/* Add a new account */
 router.post('/accounts', (req, res) => {
     const body = req.body;
 
@@ -105,6 +105,50 @@ router.post('/accounts', (req, res) => {
     };
     db[account.username] = account;
     return res.status(201).json(account);
+});
+
+/* Update an existing account */
+router.put('/accounts/:username', (req, res) => {
+    const username = req.params.username;
+    const body = req.body;
+
+    //validate account exists
+    if (!db[username]) {
+        return res
+            .status(404)
+            .json({ 'Error': `Account ${username} not found` });
+    }
+
+    //validate balance is present and is a number
+    if (body.balance && isNaN(body.balance)) {
+        return res
+            .status(400)
+            .json({ 'Error': 'balance must be a number' });
+    }
+
+    //update account object
+    const account = db[username];
+    account.name = body.name || account.name;
+    account.description = body.description || account.description;
+    account.currency = body.currency || account.currency;
+    account.balance = body.balance || account.balance;
+    return res.status(201).json(account);
+});
+
+/* Delete an existing account */
+router.delete('/accounts/:username', (req, res) => {
+    const username = req.params.username;
+
+    //validate account exists
+    if (!db[username]) {
+        return res
+            .status(404)
+            .json({ 'Error': `Account ${username} not found` });
+    }
+
+    //delete account object
+    delete db[username];
+    return res.status(204).send();
 });
 
 app.use(apiRoot, router);
