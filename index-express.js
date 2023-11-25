@@ -68,6 +68,45 @@ router.get('/accounts/:username', (req, res) => {
     }
 });
 
+// Add a new account
+router.post('/accounts', (req, res) => {
+    const body = req.body;
+
+    //validate required values
+    if (!body.username || !body.name || !body.currency) {
+        return res
+            .status(400)
+            .json({ 'Error': 'username, name and currency are required' });
+    }
+
+    //validate username is unique
+    if (db[body.username]) {
+        return res
+            .status(400)
+            .json({ 'Error': 'username already exists' });
+    }
+
+    //validate balance is present and is a number
+    if (body.balance && isNaN(body.balance)) {
+        return res
+            .status(400)
+            .json({ 'Error': 'balance must be a number' });
+    }
+
+    //create new account object
+    const account = {
+        username: body.username,
+        name: body.name,
+        id: Object.keys(db).length + 1,
+        description: body.description,
+        currency: body.currency,
+        balance: body.balance || 0,
+        transactions: []
+    };
+    db[account.username] = account;
+    return res.status(201).json(account);
+});
+
 app.use(apiRoot, router);
 
 
