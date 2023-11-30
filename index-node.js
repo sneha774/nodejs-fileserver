@@ -2,10 +2,10 @@ const fs = require('fs').promises;
 const path = require('path');
 
 async function main() {
-    const storesDir = path.join(__dirname, 'stores');
+    const storesDir = path.join(__dirname, 'data', 'stores');
     const storeSalesFiles = await GetAllFiles(storesDir);
     console.log('All Store Sales files:');
-    ListFiles(storeSalesFiles);
+    await ListFiles(storeSalesFiles);
 
     const totalSales = await CalculateTotalSales(storeSalesFiles);
     console.log(`Total Sales: ${totalSales}`);
@@ -88,5 +88,6 @@ async function WriteSalesReport(totalSales, storeSalesFiles) {
     }
 
     await fs.writeFile(reportFilePath, JSON.stringify(report, null, 2));
+
     console.log(`Sales report writen to ${reportFilePath}`);
 }

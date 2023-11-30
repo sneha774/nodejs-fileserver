@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node index-express.js",
     "dev": "nodemon index-express.js",
+    "nodeonly": "node index-node.js",
     "build": "tsc",
     "test": "jest",
     "lint": "tslint"
