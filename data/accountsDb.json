@@ -1,0 +1,29 @@
+{
+    "jdoe": {
+        "username": "jdoe",
+        "name": "John Doe",
+        "id": 1,
+        "description": "John Doe is a fictional character",
+        "currency": "USD",
+        "balance": 100.00,
+        "transactions": []
+    },
+    "bsmith": {
+        "username": "bsmith",
+        "name": "Bob Smith",
+        "id": 2,
+        "description": "Bob Smith is a fictional character",
+        "currency": "USD",
+        "balance": 100.00,
+        "transactions": []
+    },
+    "jbloggs": {
+        "username": "jbloggs",
+        "name": "Joe Bloggs",
+        "id": 3,
+        "description": "Joe Bloggs is a fictional character",
+        "currency": "USD",
+        "balance": 100.00,
+        "transactions": []
+    }
+}

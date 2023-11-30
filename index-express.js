@@ -7,6 +7,9 @@ const apiRoot = '/api/v1';
 
 const package = require('./package.json');
 
+// Get data from accountsService
+const accountsService = require('./services/accountService.js');
+
 // Use body-parser middleware to parse incoming request bodies
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -14,36 +17,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Use CORS middleware to handle Cross-Origin Resource Sharing
 app.use(cors());
 
-// Sample User Accounts Database
-const db = {
-    'jdoe': {
-        username: 'jdoe',
-        name: 'John Doe',
-        id: 1,
-        description: 'John Doe is a fictional character',
-        currency: 'USD',
-        balance: 100.00,
-        transactions: []
-    },
-    'bsmith': {
-        username: 'bsmith',
-        name: 'Bob Smith',
-        id: 2,
-        description: 'Bob Smith is a fictional character',
-        currency: 'USD',
-        balance: 100.00,
-        transactions: []
-    },
-    'jbloggs': {
-        username: 'jbloggs',
-        name: 'Joe Bloggs',
-        id: 3,
-        description: 'Joe Bloggs is a fictional character',
-        currency: 'USD',
-        balance: 100.00,
-        transactions: []
-    }
-}
+// Get sample User Accounts Database
+const accounts = accountsService();
 
 // Configure Routes
 const router = express.Router();
@@ -60,7 +35,7 @@ router.get('/', (req, res) => {
 /* Get account by username */
 router.get('/accounts/:username', (req, res) => {
     const username = req.params.username;
-    const account = db[username];
+    const account = accounts[username];
     if (account) {
         res.json(account);
     } else {
@@ -80,7 +55,7 @@ router.post('/accounts', (req, res) => {
     }
 
     //validate username is unique
-    if (db[body.username]) {
+    if (accounts[body.username]) {
         return res
             .status(400)
             .json({ 'Error': 'username already exists' });
@@ -97,13 +72,13 @@ router.post('/accounts', (req, res) => {
     const account = {
         username: body.username,
         name: body.name,
-        id: Object.keys(db).length + 1,
+        id: Object.keys(accounts).length + 1,
         description: body.description,
         currency: body.currency,
         balance: body.balance || 0,
         transactions: []
     };
-    db[account.username] = account;
+    accounts[account.username] = account;
     return res.status(201).json(account);
 });
 
@@ -113,7 +88,7 @@ router.put('/accounts/:username', (req, res) => {
     const body = req.body;
 
     //validate account exists
-    if (!db[username]) {
+    if (!accounts[username]) {
         return res
             .status(404)
             .json({ 'Error': `Account ${username} not found` });
@@ -127,7 +102,7 @@ router.put('/accounts/:username', (req, res) => {
     }
 
     //update account object
-    const account = db[username];
+    const account = accounts[username];
     account.name = body.name || account.name;
     account.description = body.description || account.description;
     account.currency = body.currency || account.currency;
@@ -140,14 +115,14 @@ router.delete('/accounts/:username', (req, res) => {
     const username = req.params.username;
 
     //validate account exists
-    if (!db[username]) {
+    if (!accounts[username]) {
         return res
             .status(404)
             .json({ 'Error': `Account ${username} not found` });
     }
 
     //delete account object
-    delete db[username];
+    delete accounts[username];
     return res.status(204).send();
 });
 
