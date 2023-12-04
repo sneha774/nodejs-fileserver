@@ -1,28 +1,24 @@
 const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 3000;
 const apiRoot = '/api/v1';
-
-const package = require('./package.json');
 
 // Get data from accountsService
 const accountsService = require('./services/accountService.js');
 
 // Use body-parser middleware to parse incoming request bodies
+const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Use CORS middleware to handle Cross-Origin Resource Sharing
+const cors = require('cors');
 app.use(cors());
-
-// Get sample User Accounts Database
-const accounts = accountsService();
 
 // Configure Routes
 const router = express.Router();
 
+const package = require('./package.json');
 router.get('/', (req, res) => {
     const packageDescription = {
         name: package.name,
@@ -31,6 +27,9 @@ router.get('/', (req, res) => {
     };
     res.send(`Welcome to ${packageDescription.name} v${packageDescription.version}!`);
 });
+
+// Get sample User Accounts Database
+const accounts = accountsService();
 
 /* Get account by username */
 router.get('/accounts/:username', (req, res) => {
