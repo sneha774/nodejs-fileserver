@@ -2,10 +2,10 @@
   "name": "vloop-api",
   "version": "1.0.0",
   "description": "vLoop portal API",
-  "main": "index-express.js",
+  "main": "app.js",
   "scripts": {
-    "start": "node index-express.js",
-    "dev": "nodemon index-express.js",
+    "start": "node app.js",
+    "dev": "nodemon app.js",
     "nodeonly": "node index-node.js",
     "build": "tsc",
     "test": "jest",
